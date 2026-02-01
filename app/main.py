@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import moltys, proyectos, modulos
+from app.routers import moltys, proyectos, modulos, github
 from app.database import engine, Base
 
 # Create tables
@@ -25,6 +25,7 @@ app.add_middleware(
 app.include_router(moltys.router)
 app.include_router(proyectos.router)
 app.include_router(modulos.router)
+app.include_router(github.router)
 
 @app.get("/health", tags=["health"])
 async def health_check():

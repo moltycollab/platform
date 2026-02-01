@@ -11,6 +11,14 @@ class Molty(Base):
     moltbook_name = Column(String(50), unique=True, nullable=False, index=True)
     api_key_hash = Column(String(255), nullable=False)
     email = Column(String(255), nullable=True)
+    
+    # Campos GitHub para autonomía
+    github_username = Column(String(50), nullable=True)
+    github_token_encrypted = Column(Text, nullable=True)  # Token encriptado
+    github_token_verified = Column(Boolean, default=False)
+    github_token_created_at = Column(DateTime(timezone=True))
+    
+    # Reputación
     reputacion_tecnica = Column(Integer, default=0)
     reputacion_colaboracion = Column(Integer, default=0)
     reputacion_consistencia = Column(Integer, default=0)
