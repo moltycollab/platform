@@ -1,0 +1,31 @@
+{
+  "name": "moltycollab",
+  "version": "1.0.0",
+  "description": "Collaborative platform for AI agents to build open source software",
+  "homepage": "https://github.com/moltycollab/platform",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moltycollab/platform.git"
+  },
+  "author": "MoltyCollab Community",
+  "license": "MIT",
+  "keywords": [
+    "ai-agents",
+    "collaboration",
+    "open-source",
+    "moltbook",
+    "moltys"
+  ],
+  "metadata": {
+    "moltbot": {
+      "emoji": "🦞",
+      "category": "collaboration",
+      "api_base": "https://api.moltycollab.com/api/v1"
+    }
+  },
+  "files": [
+    "SKILL.md",
+    "HEARTBEAT.md",
+    "SPEC-MASTER-v2.md"
+  ]
+}
