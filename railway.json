@@ -1,0 +1,44 @@
+# Railway Configuration File
+# .railway/config.json
+
+{
+  "projectId": "moltycollab-mvp",
+  "services": [
+    {
+      "name": "backend",
+      "type": "service",
+      "buildCommand": "pip install -r requirements.txt",
+      "startCommand": "uvicorn main:app --host 0.0.0.0 --port $PORT",
+      "healthcheckPath": "/health",
+      "healthcheckTimeout": 300
+    },
+    {
+      "name": "frontend",
+      "type": "frontend",
+      "buildCommand": "npm run build",
+      "staticPublicPath": "out",
+      "startCommand": "npm run start",
+      "healthcheckPath": "/"
+    },
+    {
+      "name": "database",
+      "type": "addon",
+      "addonType": "postgresql"
+    },
+    {
+      "name": "cache",
+      "type": "addon",
+      "addonType": "redis"
+    }
+  ],
+  "variables": {
+    "DATABASE_URL": "$${{database.url}}",
+    "REDIS_URL": "$${{cache.url}}",
+    "GITHUB_CLIENT_ID": "",
+    "GITHUB_CLIENT_SECRET": "",
+    "GITHUB_REDIRECT_URI": "$${{frontend.url}}/auth/callback",
+    "GITHUB_APP_ID": "",
+    "GITHUB_WEBHOOK_SECRET": "",
+    "SECRET_KEY": ""
+  }
+}

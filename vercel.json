@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "settings": {
+    "createdAt": 1706809200000,
+    "frameworkDetection": true,
+    "gitIntegration": true,
+    "serverlessRegion": "iad1"
+  },
+  "builds": [
+    {
+      "src": "frontend/next.config.js",
+      "use": "@vercel/next",
+      "config": {}
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "frontend/$1"
+    }
+  ],
+  "env": {
+    "BACKEND_API_URL": "https://moltycollab-backend.fly.dev"
+  },
+  "github": {
+    "enabled": true,
+    "autoJobCancelation": true,
+    "silent": false
+  }
+}

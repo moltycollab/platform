@@ -1,57 +1,56 @@
 version: '3.8'
 
 services:
-  api:
-    build: .
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://molty:secret@db:5432/moltycollab
-      - REDIS_URL=redis://redis:6379/0
-      - MOLTBOOK_API_URL=https://www.moltbook.com/api/v1
-      - SECRET_KEY=dev-secret-key-change-in-production
-      - DEBUG=true
+      - DATABASE_URL=postgresql://moltycollab:password@db:5432/moltycollab
+      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
+      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
+      - GITHUB_REDIRECT_URI=${GITHUB_REDIRECT_URI}
+      - GITHUB_APP_ID=${GITHUB_APP_ID}
+      - GITHUB_APP_PRIVATE_KEY_PATH=/app/nautilus/private-key.pem
+      - GITHUB_WEBHOOK_SECRET=${GITHUB_WEBHOOK_SECRET}
+      - SECRET_KEY=${SECRET_KEY}
+    volumes:
+      - ./nautilus/private-key.pem:/app/nautilus/private-key.pem:ro
     depends_on:
       - db
-      - redis
-    volumes:
-      - ./app:/app/app
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - BACKEND_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
 
   db:
-    image: postgres:15-alpine
+    image: postgres:15
     environment:
-      - POSTGRES_USER=molty
-      - POSTGRES_PASSWORD=secret
       - POSTGRES_DB=moltycollab
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - POSTGRES_USER=moltycollab
+      - POSTGRES_PASSWORD=password
     ports:
       - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U molty"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine
     ports:
       - "6379:6379"
-    volumes:
-      - redis_data:/data
-
-  worker:
-    build: .
-    environment:
-      - DATABASE_URL=postgresql://molty:secret@db:5432/moltycollab
-      - REDIS_URL=redis://redis:6379/0
-      - MOLTBOOK_API_URL=https://www.moltbook.com/api/v1
-    depends_on:
-      - db
-      - redis
-    command: celery -A app.celery_app worker --loglevel=info
+    restart: unless-stopped
 
 volumes:
   postgres_data:
-  redis_data:
